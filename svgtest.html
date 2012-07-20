@@ -1,0 +1,71 @@
+<html>
+	<head>
+<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js">
+</script>
+<script>
+	var path = new Array();
+	var newPath;
+					$(document).ready(function(){
+						var draw=false;
+						var newDraw=true;
+						$("#drawit").mouseleave(function(e){
+							draw=false;
+							path = new Array();
+						});
+						$("#drawit").mousedown(function(e){
+							if (navigator.appName == 'Netscape' && (e.which == 1))
+							{
+								draw=true;
+								var svgNS = "http://www.w3.org/2000/svg";
+								newPath = document.createElementNS(svgNS,"path");
+								newPath.setAttributeNS(null,"d","M 0,0 L 0,0");	
+								newPath.setAttributeNS(null,"fill","none");				
+								newPath.setAttributeNS(null,"stroke","black");
+								newPath.setAttributeNS(null,"stroke-width","3");		
+								document.getElementById("drawit").appendChild(newPath); 
+							}
+						});
+						$("#drawit").mouseup(function(e){
+							if (navigator.appName == 'Netscape' && (e.which == 1))
+							{
+								draw=false;
+								path = new Array();
+							}
+						});
+						$("#drawit").mousemove(function(e){
+							if(draw)
+							{
+								path.push(e.pageX + "," + e.pageY);
+								for(x=0;x<path.length;x++)
+								{
+									if(x==0)
+									{
+										dPath = "M ";
+									}
+									dPath = dPath + path[x];
+									if(x!=(path.length-1))
+									{
+										dPath = dPath + " ";
+									}
+									if(x==0)
+									{
+										dPath = dPath + " L ";
+									}
+								}
+								if(path.length==1)
+								{
+									dPath = dPath + path[0];
+								}		
+								newPath.setAttributeNS(null,"d",dPath);
+							}
+						});
+					});
+				</script>
+	</head>
+	<body oncontextmenu="return false;">
+		<div>
+			<svg id="drawit" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="600" height="600">	
+			</svg>
+		</div>
+	</body>
+</html>
