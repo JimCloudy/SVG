@@ -1,0 +1,158 @@
+<html>
+	<head>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.2/jquery.min.js">
+		</script>
+		<script>
+			var path = new Array();
+			var newPath;
+			var lineColor="black";
+			var lineWidth="1";
+			var erase=false;
+			var eraseSize="10";
+			$(document).ready(function(){
+				var draw=false;
+				var newDraw=true;
+				$("#drawit").mouseleave(function(e){
+					draw=false;
+					path = new Array();
+				});
+				$("#drawit").mousedown(function(e){
+					if ((e.which && (e.which == 1)) || (e.button && (e.button == 1)))
+					{
+						draw=true;
+						if(!erase)
+						{
+							var svgNS = "http://www.w3.org/2000/svg";
+							newPath = document.createElementNS(svgNS,"path");
+							newPath.setAttributeNS(null,"d","M 0,0 L 0,0");	
+							newPath.setAttributeNS(null,"fill","none");				
+							newPath.setAttributeNS(null,"stroke",lineColor);
+							newPath.setAttributeNS(null,"stroke-width",lineWidth);		
+							document.getElementById("drawit").appendChild(newPath); 
+						}
+						if(erase)
+						{
+							var pagex=e.pageX-10;
+							var pagey=e.pageY-10;
+							var svgNS = "http://www.w3.org/2000/svg";
+							newPath = document.createElementNS(svgNS,"rect");
+							newPath.setAttributeNS(null,"x",pagex);
+							newPath.setAttributeNS(null,"y",pagey);
+							newPath.setAttributeNS(null,"height",eraseSize);	
+							newPath.setAttributeNS(null,"width", eraseSize);
+							newPath.setAttributeNS(null,"fill","white");
+							newPath.setAttributeNS(null,"stroke","white");
+							newPath.setAttributeNS(null,"stroke-width","1");		
+							document.getElementById("drawit").appendChild(newPath);
+						}
+					}
+				});
+				$("#drawit").mouseup(function(e){
+					if (e.which && (e.which == 1))
+					{
+						draw=false;
+						path = new Array();
+					}
+				});
+				$("#drawit").mousemove(function(e){
+					if(draw && !erase)
+					{
+						path.push(e.pageX + "," + e.pageY);
+						for(x=0;x<path.length;x++)
+						{
+							if(x==0)
+							{
+								dPath = "M ";
+							}
+							dPath = dPath + path[x];
+							if(x!=(path.length-1))
+							{
+								dPath = dPath + " ";
+							}
+							if(x==0)
+							{
+								dPath = dPath + " L ";
+							}
+						}
+						if(path.length==1)
+						{
+							dPath = dPath + path[0];
+						}		
+						newPath.setAttributeNS(null,"d",dPath);
+					}
+					else if(draw && erase)
+					{
+						var pagex=e.pageX-20;
+						var pagey=e.pageY-20;
+						var svgNS = "http://www.w3.org/2000/svg";
+						newPath = document.createElementNS(svgNS,"rect");
+						newPath.setAttributeNS(null,"x",pagex);
+						newPath.setAttributeNS(null,"y",pagey);
+						newPath.setAttributeNS(null,"height",eraseSize);	
+						newPath.setAttributeNS(null,"width", eraseSize);
+						newPath.setAttributeNS(null,"fill","white");
+						newPath.setAttributeNS(null,"stroke","white");
+						newPath.setAttributeNS(null,"stroke-width","1");		
+						document.getElementById("drawit").appendChild(newPath);
+					}
+
+				});
+			});
+			function setColor(c)
+			{
+				erase=false;
+				lineColor=c;
+				t=document.getElementsByName("strokeWidth");
+				for(x=0;x<t.length;x++)
+				{
+					t.item(x).setAttribute("stroke",lineColor);
+				}
+			}
+			function setWidth(w)
+			{
+				erase=false;
+				lineWidth=w;
+			}
+			function setEraser(s)
+			{
+				erase=true;
+				eraseSize=s;
+			}
+		</script>
+	</head>
+	<body oncontextmenu="return false;">
+		<div style="border:solid;width:800;height:600;">
+			<svg id="drawit" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="800" height="600">
+			</svg>
+		</div>
+		<br/>
+		<div>
+			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="600" height="100">
+				<rect x="10" y="25" height="50" width="50" fill="black" stroke="black" stroke-width="2" onclick="setColor('black')"/>
+				<rect x="70" y="25" height="50" width="50" fill="red" stroke="black" stroke-width="2" onclick="setColor('red')"/>
+				<rect x="130" y="25" height="50" width="50" fill="yellow" stroke="black" stroke-width="2" onclick="setColor('yellow')"/>
+				<rect x="190" y="25" height="50" width="50" fill="blue" stroke="black" stroke-width="2" onclick="setColor('blue')"/>
+
+				<rect x="250" y="25" height="50" width="50" fill="white" stroke="white" stroke-width="1" onclick="setWidth('1')"/>
+				<rect x="310" y="25" height="50" width="50" fill="white" stroke="white" stroke-width="1" onclick="setWidth('2')"/>
+				<rect x="370" y="25" height="50" width="50" fill="white" stroke="white" stroke-width="1" onclick="setWidth('3')"/>
+				<rect x="430" y="25" height="50" width="50" fill="white" stroke="white" stroke-width="1" onclick="setWidth('4')"/>
+				<rect x="490" y="25" height="50" width="50" fill="white" stroke="white" stroke-width="1" onclick="setWidth('5')"/>
+				<line name="strokeWidth" x1="250" y1="50" x2="300" y2="50" stroke="black" stroke-width="1" onclick="setWidth('1')"/>
+				<line name="strokeWidth" x1="310" y1="50" x2="360" y2="50" stroke="black" stroke-width="2" onclick="setWidth('2')"/>
+				<line name="strokeWidth" x1="370" y1="50" x2="420" y2="50" stroke="black" stroke-width="3" onclick="setWidth('3')"/>
+				<line name="strokeWidth" x1="430" y1="50" x2="480" y2="50" stroke="black" stroke-width="4" onclick="setWidth('4')"/>
+				<line name="strokeWidth" x1="490" y1="50" x2="540" y2="50" stroke="black" stroke-width="5" onclick="setWidth('5')"/>
+			</svg>
+			<h3>ERASE</h3>
+			<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="300" height="100">
+				<rect x="10" y="25" height="10" width="10" fill="white" stroke="black" stroke-width="1" onclick="setEraser('10')"/>
+				<rect x="70" y="25" height="20" width="20" fill="white" stroke="black" stroke-width="1" onclick="setEraser('20')"/>
+				<rect x="130" y="25" height="30" width="30" fill="white" stroke="black" stroke-width="1" onclick="setEraser('30')"/>
+				<rect x="190" y="25" height="40" width="40" fill="white" stroke="black" stroke-width="1" onclick="setEraser('40')"/>
+				<rect x="250" y="25" height="50" width="50" fill="white" stroke="black" stroke-width="1" onclick="setEraser('50')"/>
+			</svg>
+		</div>
+	</body>
+</html>
+
